@@ -10,10 +10,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 //? if <1.21.3 {
-/*import net.minecraft.client.network.AbstractClientPlayerEntity;
-*///?} else {
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-//?}
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+//?} else {
+/*import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+*///?}
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,31 +25,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerEntityRendererMixin {
     @Inject(at = {@At("HEAD")}, method = "renderLabelIfPresent*", cancellable = true)
     //? if <=1.20.4 {
-    /*public void renderLabelIfPresent(AbstractClientPlayerEntity player, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
-     *///?} else if <1.21.3 {
+    public void renderLabelIfPresent(AbstractClientPlayerEntity player, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
+     //?} else if <1.21.3 {
     /*public void renderLabelIfPresent(AbstractClientPlayerEntity player, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, float f, CallbackInfo ci) {
     *///?} else {
-    public void renderLabelIfPresent(PlayerEntityRenderState player, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
-    //?}
+    /*public void renderLabelIfPresent(PlayerEntityRenderState player, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
+    *///?}
         if (!EventUtils.isInHidePlayersMode()) return;
         final ClientPlayerEntity clientPlayer = MinecraftClient.getInstance().player;
         if (clientPlayer == null) return;
 
         // Get player name
         //? if <1.21.3 {
-        /*final Text nameText = player.getName();
-        *///?} else {
-        final Text nameText = player.playerName;
+        final Text nameText = player.getName();
+        //?} else {
+        /*final Text nameText = player.playerName;
         if (nameText == null) return;
-        //?}
+        *///?}
         final String name = nameText.getString().toLowerCase();
 
         // Check if main player
         //? if <1.21.3 {
-        /*if (player.isMainPlayer()) return;
-        *///?} else {
-        if (name.equals(clientPlayer.getName().getString().toLowerCase())) return;
-        //?}
+        if (player.isMainPlayer()) return;
+        //?} else {
+        /*if (name.equals(clientPlayer.getName().getString().toLowerCase())) return;
+        *///?}
 
         // Not visible in current view mode -> hide nametag
         if (!EventUtils.isPlayerVisible(name)) {
@@ -67,10 +67,10 @@ public class PlayerEntityRendererMixin {
 
         // Get player position
         //? if <1.21.3 {
-        /*final Vec3d playerPos = player.getPos();
-        *///?} else {
-        final Vec3d playerPos = new Vec3d(player.x, player.y, player.z);
-        //?}
+        final Vec3d playerPos = player.getPos();
+        //?} else {
+        /*final Vec3d playerPos = new Vec3d(player.x, player.y, player.z);
+        *///?}
 
         // Radius-specific
         //? if >=1.21.11 {
