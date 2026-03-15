@@ -6,6 +6,8 @@ import cc.aabss.eventutils.EventUtils;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.*;
 
+import net.minecraft.client.MinecraftClient;
+
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;
@@ -134,6 +136,15 @@ public class ConfigScreen {
                             })
                             .controller(ConfigScreen::getBooleanBuilder).build())
                     .build());
+
+        // Groups
+        builder.category(ConfigCategory.createBuilder().name(translatable("eventutils.config.groups.category"))
+                .option(ButtonOption.createBuilder()
+                        .name(translatable("eventutils.config.groups.manage_title"))
+                        .description(OptionDescription.of(translatable("eventutils.config.groups.manage_description")))
+                        .action((yaclScreen, option) -> MinecraftClient.getInstance().setScreen(new GroupManagerScreen(yaclScreen)))
+                        .build())
+                .build());
 
         // Alerts & notification sounds
         final OptionGroup.Builder alertsGroup = OptionGroup.createBuilder()

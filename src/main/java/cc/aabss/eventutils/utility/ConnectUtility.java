@@ -38,10 +38,10 @@ public class ConnectUtility {
         client.execute(() -> {
             try {
                 //? if >=1.21.6 {
-                /*client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")), false);
-                *///?} else {
-                client.disconnect();
-                //?}
+                client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")), false);
+                //?} else {
+                /*client.disconnect();
+                *///?}
 
                 //? if <=1.20.4 {
                 /*ConnectScreen.connect(screen, client, address, new ServerInfo("EventUtils Event Server", ip, ServerInfo.ServerType.OTHER), true);

@@ -13,7 +13,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 //? if >=1.21.6
-/*import net.minecraft.client.gl.RenderPipelines;*/
+import net.minecraft.client.gl.RenderPipelines;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -90,10 +90,10 @@ public class NotificationToast implements Toast {
             //? if <1.21.2 {
             /*drawContext.drawGuiTexture(TEXTURE, 0, 0, width, height);
             *///?} else if >=1.21.6 {
-            /*drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width, height); // work on 1.21.4 and 1.21.5
-            *///?} else {
-            drawContext.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, width, height); // work on 1.21.4 and 1.21.5
-            //?}
+            drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, width, height); // work on 1.21.4 and 1.21.5
+            //?} else {
+            /*drawContext.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, width, height); // work on 1.21.4 and 1.21.5
+            *///?}
         } else {
             int minHeight = Math.min(4, height - 28);
             drawPart(drawContext, 0, 0, 28);
@@ -123,14 +123,14 @@ public class NotificationToast implements Toast {
         for (int o = m; o < widthN; o += 64) context.drawGuiTexture(TEXTURE, 160, 32, 32, j, o, k, Math.min(64, widthN - o), l);
         context.drawGuiTexture(TEXTURE, 160, 32, 160 - n, j, widthN, k, n, l);
         *///?} else if >=1.21.6 {
-        /*context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 160, 32, 0, j, 0, k, m, l);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 160, 32, 0, j, 0, k, m, l);
         for (int o = m; o < widthN; o += 64) context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 160, 32, 32, j, o, k, Math.min(64, widthN - o), l);
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 160, 32, 160 - n, j, widthN, k, n, l);
-        *///?} else {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 160, 32, 0, j, 0, k, m, l);
+        //?} else {
+        /*context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 160, 32, 0, j, 0, k, m, l);
         for (int o = m; o < widthN; o += 64) context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 160, 32, 32, j, o, k, Math.min(64, widthN - o), l);
         context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 160, 32, 160 - n, j, widthN, k, n, l);
-        //?}
+        *///?}
     }
 
     @Environment(value = EnvType.CLIENT)

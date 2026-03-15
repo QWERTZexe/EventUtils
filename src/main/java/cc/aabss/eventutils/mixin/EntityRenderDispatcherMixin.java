@@ -24,13 +24,13 @@ public class EntityRenderDispatcherMixin {
     *///?} else {
     private <E extends Entity> void render(E entity, double x, double y, double z, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, CallbackInfo ci) {
     //?}
-        if (!EventUtils.MOD.hidePlayers) return;
+        if (!EventUtils.isInHidePlayersMode()) return;
 
         if (entity instanceof PlayerEntity player) {
             // Players
             if (player.isMainPlayer()) return;
             final String name = player.getName().getString().toLowerCase();
-            if (EventUtils.MOD.config.whitelistedPlayers.contains(name) || EventUtils.isNPC(name)) return;
+            if (EventUtils.isPlayerVisible(name)) return;
         } else {
             // Non-players (mob)
             if (!EventUtils.MOD.config.hiddenEntityTypes.contains(entity.getType())) return;

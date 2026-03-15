@@ -33,6 +33,7 @@ public class EventConfig extends FileLoader {
     @NotNull public String defaultFamousIp;
     @NotNull public List<EntityType<?>> hiddenEntityTypes;
     @NotNull public List<String> whitelistedPlayers;
+    @NotNull public List<PlayerGroup> groups;
     public boolean useTestingApi;
     @NotNull public final List<EventType> eventTypes;
     @NotNull public final Map<EventType, NotificationSound> notificationSounds;
@@ -63,6 +64,7 @@ public class EventConfig extends FileLoader {
         hideNPCs = get("hide_npcs", Defaults.HIDE_NPCS);
         hiddenEntityTypes = get("hidden_entity_types", Defaults.hiddenEntityTypes(), new TypeToken<List<EntityType<?>>>(){}.getType());
         whitelistedPlayers = get("whitelisted_players", Defaults.whitelistedPlayers(), new TypeToken<List<String>>(){}.getType());
+        groups = get("groups", Defaults.groups(), new TypeToken<List<PlayerGroup>>(){}.getType());
         useTestingApi = get("use_testing_api", Defaults.USE_TESTING_API);
         eventTypes = get("notifications", Defaults.eventTypes(), new TypeToken<List<EventType>>(){}.getType());
         notificationSounds = get("notification_sounds", Defaults.notificationSounds(), new TypeToken<Map<EventType, NotificationSound>>(){}.getType());
@@ -162,6 +164,10 @@ public class EventConfig extends FileLoader {
         @NotNull
         public static List<String> whitelistedPlayers() {
             return new ArrayList<>(WHITELISTED_PLAYERS);
+        }
+        @NotNull
+        public static List<PlayerGroup> groups() {
+            return new ArrayList<>();
         }
         @NotNull
         public static List<EventType> eventTypes() {

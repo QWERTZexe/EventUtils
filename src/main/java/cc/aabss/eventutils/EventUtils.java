@@ -5,6 +5,7 @@ import cc.aabss.eventutils.utility.ConnectUtility;
 import cc.aabss.eventutils.websocket.SocketEndpoint;
 import cc.aabss.eventutils.websocket.WebSocketClient;
 import cc.aabss.eventutils.config.EventConfig;
+import cc.aabss.eventutils.config.PlayerGroup;
 
 import com.google.gson.JsonObject;
 
@@ -59,7 +60,8 @@ public class EventUtils implements ClientModInitializer {
     public KeybindManager keybindManager;
     @NotNull public final EventServerManager eventServerManager = new EventServerManager(this);
     @NotNull public final Map<EventType, String> lastIps = new EnumMap<>(EventType.class);
-    public boolean hidePlayers = false;
+    /** 0 = first group (or hide-all when no groups), 1 = second group, ... ; groups.size() = players revealed */
+    public int hidePlayersViewMode = 0;
 
     public EventUtils() {
         MOD = this;
@@ -144,6 +146,49 @@ public class EventUtils implements ClientModInitializer {
 
     public static boolean isNPC(@NotNull String name) {
         return isNPC(name, false);
+    }
+
+    /** Whether the current view mode is "players revealed" (show everyone). */
+    public static boolean isHidePlayersRevealed() {
+        final int n = MOD.config.groups.size();
+        if (n == 0) return MOD.hidePlayersViewMode == 1;
+        return MOD.hidePlayersViewMode >= n;
+    }
+
+    /** Whether we are in a "hide" mode (any group or hide-all). */
+    public static boolean isInHidePlayersMode() {
+        final int n = MOD.config.groups.size();
+        if (n == 0) return MOD.hidePlayersViewMode == 0;
+        return MOD.hidePlayersViewMode < n;
+    }
+
+    /** Current group when in group view mode, or null if revealed or no groups. */
+    @Nullable
+    public static PlayerGroup getCurrentViewGroup() {
+        final var groups = MOD.config.groups;
+        if (groups.isEmpty() || MOD.hidePlayersViewMode >= groups.size()) return null;
+        return groups.get(MOD.hidePlayersViewMode);
+    }
+
+    /**
+     * True if the player (by lowercased name) should be visible with current view mode.
+     * Caller must exclude main player.
+     */
+    public static boolean isPlayerVisible(@NotNull String nameLower) {
+        if (isHidePlayersRevealed()) return true;
+        if (MOD.config.whitelistedPlayers.contains(nameLower) || isNPC(nameLower)) return true;
+        final PlayerGroup group = getCurrentViewGroup();
+        if (group == null) return false; // no groups, hide mode: only whitelist/NPC
+        return group.containsPlayer(nameLower);
+    }
+
+    /** True if the nametag for this visible player should be drawn (per-group setting when in group view). */
+    public static boolean shouldShowNametagFor(@NotNull String nameLower) {
+        if (!isInHidePlayersMode()) return true;
+        final PlayerGroup group = getCurrentViewGroup();
+        if (group == null) return true; // hide-all with no groups: use default
+        if (!group.containsPlayer(nameLower)) return true; // whitelist/NPC visibility: show nametag
+        return group.isShowNametags();
     }
 
     @Contract(pure = true)

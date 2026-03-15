@@ -24,7 +24,7 @@ public abstract class EntityMixin {
 
     @Inject(method = "spawnSprintingParticles", at = @At("HEAD"), cancellable = true)
     private void spawnSprintingParticles(CallbackInfo ci) {
-        if (!EventUtils.MOD.hidePlayers) return;
+        if (!EventUtils.isInHidePlayersMode()) return;
         final ClientPlayerEntity mainPlayer = MinecraftClient.getInstance().player;
         if (mainPlayer == null) return;
         final EntityType<?> type = getType();
@@ -32,7 +32,7 @@ public abstract class EntityMixin {
         if (type == EntityType.PLAYER) {
             // Players
             final String name = getName().getString().toLowerCase();
-            if (mainPlayer.getName().getString().toLowerCase().equals(name) || EventUtils.MOD.config.whitelistedPlayers.contains(name) || EventUtils.isNPC(name)) return;
+            if (mainPlayer.getName().getString().toLowerCase().equals(name) || EventUtils.isPlayerVisible(name)) return;
         } else {
             // Non-players (mob)
             if (!EventUtils.MOD.config.hiddenEntityTypes.contains(type)) return;

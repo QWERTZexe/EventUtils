@@ -31,7 +31,7 @@ public class PlayerEntityRendererMixin {
     *///?} else {
     public void renderLabelIfPresent(PlayerEntityRenderState player, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
     //?}
-        if (!EventUtils.MOD.hidePlayers) return;
+        if (!EventUtils.isInHidePlayersMode()) return;
         final ClientPlayerEntity clientPlayer = MinecraftClient.getInstance().player;
         if (clientPlayer == null) return;
 
@@ -51,14 +51,19 @@ public class PlayerEntityRendererMixin {
         if (name.equals(clientPlayer.getName().getString().toLowerCase())) return;
         //?}
 
-        // Checks
-        if (EventUtils.MOD.config.whitelistedPlayers.contains(name) || EventUtils.isNPC(name)) return;
-
-        // Any radius
-        if (EventUtils.MOD.config.hidePlayersRadius == 0) {
+        // Not visible in current view mode -> hide nametag
+        if (!EventUtils.isPlayerVisible(name)) {
             ci.cancel();
             return;
         }
+        // Visible: respect per-group nametag setting
+        if (!EventUtils.shouldShowNametagFor(name)) {
+            ci.cancel();
+            return;
+        }
+
+        // Any radius
+        if (EventUtils.MOD.config.hidePlayersRadius == 0) return;
 
         // Get player position
         //? if <1.21.3 {

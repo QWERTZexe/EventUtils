@@ -19,6 +19,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.HashMap;
 import java.util.Map;
 
+import static net.minecraft.text.Text.literal;
 import static net.minecraft.text.Text.translatable;
 
 
@@ -79,11 +80,21 @@ public class KeybindManager {
             // In-game keybinds
             if (client.player == null) return;
 
-            // Hide players key
+            // Hide players key: cycle Group 1 -> Group 2 -> ... -> Players Revealed -> repeat
             if (hidePlayersKey.wasPressed()) {
-                mod.hidePlayers = !mod.hidePlayers;
-                client.player.sendMessage(translatable(mod.hidePlayers ? "eventutils.hideplayers.enabled" : "eventutils.hideplayers.disabled")
-                        .formatted(mod.hidePlayers ? Formatting.GREEN : Formatting.RED), true);
+                final int groupCount = mod.config.groups.size();
+                final int totalStates = groupCount == 0 ? 2 : groupCount + 1;
+                mod.hidePlayersViewMode = (mod.hidePlayersViewMode + 1) % totalStates;
+                final boolean revealed = EventUtils.isHidePlayersRevealed();
+                final Text message;
+                if (revealed) {
+                    message = translatable("eventutils.hideplayers.view_revealed").formatted(Formatting.GREEN);
+                } else {
+                    final var group = EventUtils.getCurrentViewGroup();
+                    message = (group != null ? literal(group.getName()) : translatable("eventutils.hideplayers.view_whitelist_only"))
+                            .formatted(Formatting.GREEN);
+                }
+                client.player.sendMessage(translatable("eventutils.hideplayers.view_prefix").append(message), true);
             }
         });
     }
