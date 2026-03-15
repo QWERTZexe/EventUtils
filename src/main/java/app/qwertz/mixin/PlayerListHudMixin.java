@@ -37,12 +37,12 @@ public abstract class PlayerListHudMixin {
         if (client.player == null) return;
 
         //? if >=1.21.11 {
-        String name = entry.getProfile().name();
+        /*String name = entry.getProfile().name();
         final boolean isLocal = entry.getProfile().id().equals(client.player.getUuid());
-        //?} else {
-        /*String name = entry.getProfile().getName();
+        *///?} else {
+        String name = entry.getProfile().getName();
         final boolean isLocal = entry.getProfile().getId().equals(client.player.getUuid());
-        *///?}
+        //?}
         final PlusTag tag;
 
         if (isLocal) {
@@ -56,10 +56,10 @@ public abstract class PlayerListHudMixin {
             EventUtils.LOGGER.debug("[TabList] entry={} isLocal=true tag=config.selectedPlusTag={}", name, tag);
         } else {
             //? if >=1.21.11 {
-            String uuid = entry.getProfile().id().toString();
-            //?} else {
-            /*String uuid = entry.getProfile().getId().toString();
-            *///?}
+            /*String uuid = entry.getProfile().id().toString();
+            *///?} else {
+            String uuid = entry.getProfile().getId().toString();
+            //?}
             Set<PlusTag> cached = EventAlertsApi.getCached(uuid);
             if (cached == null) {
                 EventUtils.LOGGER.debug("[TabList] entry={} uuid={} cache MISS, scheduling fetch", name, uuid);

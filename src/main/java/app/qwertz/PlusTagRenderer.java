@@ -5,7 +5,7 @@
 package app.qwertz;
 
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.render.RenderLayer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +22,6 @@ public final class PlusTagRenderer {
     /** Draw the icon at (x, y) with the given size (e.g. 8 for tab list). Samples full 64x64 texture, scaled to size. */
     public static void draw(@NotNull DrawContext context, @NotNull PlusTag tag, int x, int y, int size) {
         if (tag == PlusTag.WHITE) return; // unused, skip
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, tag.getTextureId(), x, y, 0f, 0f, size, size, TEX_SIZE, TEX_SIZE, TEX_SIZE, TEX_SIZE);
+        context.drawTexture(RenderLayer::getGuiTextured, tag.getTextureId(), x, y, 0f, 0f, size, size, TEX_SIZE, TEX_SIZE, TEX_SIZE, TEX_SIZE);
     }
 }

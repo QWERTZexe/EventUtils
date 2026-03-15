@@ -31,7 +31,7 @@ public class UpdateChecker {
         client.send(() -> {
             if (client.player == null) return;
             //? if >=1.21.5 {
-            client.player.sendMessage(
+            /*client.player.sendMessage(
                     EventUtils.MESSAGE_PREFIX.copy().append(" §e" + EventUtils.translate("eventutils.updatechecker.new")+"§r §7(v" + Versions.EU_VERSION + " -> v" + latestVersion.replace(Versions.MC_VERSION + "-", "") + ")" + "\n")
                             .setStyle(EventUtils.MESSAGE_PREFIX.getStyle()
                                     .withHoverEvent(new HoverEvent.ShowText(translatable("eventutils.updatechecker.hover")))
@@ -39,8 +39,8 @@ public class UpdateChecker {
                             .append(Text.literal("§7§o" + EventUtils.translate("eventutils.updatechecker.config"))
                                     .setStyle(Style.EMPTY.withClickEvent(new ClickEvent.RunCommand("/event utils")))),
                     false);
-            //?} else {
-            /*client.player.sendMessage(
+            *///?} else {
+            client.player.sendMessage(
                     EventUtils.MESSAGE_PREFIX.copy().append(" §e" + EventUtils.translate("eventutils.updatechecker.new")+"§r §7(v" + Versions.EU_VERSION + " -> v" + latestVersion.replace(Versions.MC_VERSION + "-", "") + ")" + "\n")
                             .setStyle(EventUtils.MESSAGE_PREFIX.getStyle()
                                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translatable("eventutils.updatechecker.hover")))
@@ -48,7 +48,7 @@ public class UpdateChecker {
                             .append(Text.literal("§7§o" + EventUtils.translate("eventutils.updatechecker.config"))
                                     .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/eventutils config")))),
                     false);
-            *///?}
+            //?}
         });
     }
 
