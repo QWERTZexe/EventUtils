@@ -13,8 +13,7 @@
     "EntryListWidgetAccessor",
     "KeyBindingMixin",
     "MultiplayerScreenMixin",
-    "PlayerEntityRendererMixin",
-    "app.qwertz.mixin.PlayerListHudMixin"
+    "PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

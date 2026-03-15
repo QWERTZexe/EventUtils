@@ -27,10 +27,10 @@ public class EventInfoScreen extends Screen {
 
     public EventInfoScreen(@NotNull JsonObject json) {
         //? if >=1.21.11 {
-        /*super(Text.translatable(EventUtils.MOD.keybindManager.eventInfoKey.getId()));
-        *///?} else {
-        super(Text.translatable(EventUtils.MOD.keybindManager.eventInfoKey.getTranslationKey()));
-        //?}
+        super(Text.translatable(EventUtils.MOD.keybindManager.eventInfoKey.getId()));
+        //?} else {
+        /*super(Text.translatable(EventUtils.MOD.keybindManager.eventInfoKey.getTranslationKey()));
+        *///?}
         this.json = json;
     }
 

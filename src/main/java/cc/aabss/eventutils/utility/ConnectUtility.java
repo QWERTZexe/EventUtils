@@ -40,16 +40,16 @@ public class ConnectUtility {
                 //? if >=1.21.11 {
                 client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")), false, false);
                 //?} else if >=1.21 {
-                client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")), false);
-                //?} else {
-                client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")));
-                //?}
+                /*client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")), false);
+                *///?} else {
+                /*client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")));
+                *///?}
 
                 //? if <=1.20.4 {
-                ConnectScreen.connect(screen, client, address, new ServerInfo("EventUtils Event Server", ip, ServerInfo.ServerType.OTHER), true);
-                //?} else {
-                /*ConnectScreen.connect(screen, client, address, new ServerInfo("EventUtils Event Server", ip, ServerInfo.ServerType.OTHER), true, null);
-                *///?}
+                /*ConnectScreen.connect(screen, client, address, new ServerInfo("EventUtils Event Server", ip, ServerInfo.ServerType.OTHER), true);
+                *///?} else {
+                ConnectScreen.connect(screen, client, address, new ServerInfo("EventUtils Event Server", ip, ServerInfo.ServerType.OTHER), true, null);
+                //?}
             } catch (final Exception e) {
                 EventUtils.LOGGER.error("Failed to connect to server: {}", e.getMessage());
                 throw new RuntimeException(e);
@@ -108,10 +108,10 @@ public class ConnectUtility {
         final int size = strings.size();
         if (size == 1) {
             //? if java: <21 {
-            return strings.get(0);
-            //?} else {
-            /*return strings.getFirst();
-            *///?}
+            /*return strings.get(0);
+            *///?} else {
+            return strings.getFirst();
+            //?}
         }
         if (size > 1) for (final String string : strings) if (isValidIp(string)) return string;
 
@@ -133,7 +133,7 @@ public class ConnectUtility {
         try {
             final String body = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).get().body();
             //? if java: >=21
-            /*client.close();*/
+            client.close();
             return !body.endsWith(":null}") && !body.endsWith("Not Found") && !body.endsWith("Invalid address value");
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
