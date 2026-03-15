@@ -13,7 +13,7 @@
   "icon": "assets/eventutils/textures/icon.png",
   "environment": "*",
   "mixins": [
-    "eventutils.mixin.json",
+    "${mixin_config}",
     "eventutils-qwertz.mixin.json"
   ],
   "entrypoints": {
