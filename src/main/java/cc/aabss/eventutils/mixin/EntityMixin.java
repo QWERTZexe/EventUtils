@@ -19,7 +19,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
     @Shadow public abstract EntityType<?> getType();
-    @Shadow public abstract Vec3d getPos();
+    //? if >=1.21.11 {
+    @Shadow public abstract Vec3d getSyncedPos();
+    //?} else {
+    /*@Shadow public abstract Vec3d getPos();
+    *///?}
     @Shadow public abstract Text getName();
 
     @Inject(method = "spawnSprintingParticles", at = @At("HEAD"), cancellable = true)
@@ -45,6 +49,10 @@ public abstract class EntityMixin {
         }
 
         // Specific radius
-        if (mainPlayer.getPos().distanceTo(getPos()) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
+        //? if >=1.21.11 {
+        if (mainPlayer.getSyncedPos().distanceTo(getSyncedPos()) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
+        //?} else {
+        /*if (mainPlayer.getPos().distanceTo(getPos()) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
+        *///?}
     }
 }

@@ -10,6 +10,9 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+//? if >=1.21.11 {
+import net.minecraft.util.Identifier;
+//?}
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,22 +35,36 @@ public class KeybindManager {
 
     public KeybindManager(@NotNull EventUtils mod) {
         // Keybindings
+        //? if >=1.21.11 {
+        final KeyBinding.Category category = KeyBinding.Category.create(Identifier.of("eventutils", "key.category.eventutils"));
         eventInfoKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.eventutils.eventinfo",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_RIGHT_SHIFT,
+                category));
+        final KeyBinding hidePlayersKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.eventutils.hideplayers",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_F10,
+                category));
+        //?} else {
+        /*eventInfoKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.eventutils.eventinfo",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_RIGHT_SHIFT,
                 CATEGORY));
+        final KeyBinding hidePlayersKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.eventutils.hideplayers",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_F10,
+                CATEGORY));
+        *///?}
         // DEV: Uncomment to force test event
 //        final KeyBindingMixin testEventKey = (KeyBindingMixin) KeyBindingHelper.registerKeyBinding(new KeyBinding(
 //                "key.eventutils.testevent",
 //                InputUtil.Type.KEYSYM,
 //                GLFW.GLFW_KEY_SEMICOLON,
 //                CATEGORY));
-        final KeyBinding hidePlayersKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.eventutils.hideplayers",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_F10,
-                CATEGORY));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (windowHandle == null) windowHandle = client.getWindow().getHandle();
@@ -100,7 +117,11 @@ public class KeybindManager {
     }
 
     private boolean canNotPress(@NotNull KeyBinding keyBinding) {
-        final String translationKey = keyBinding.getTranslationKey();
+        //? if >=1.21.11 {
+        final String translationKey = keyBinding.getId();
+        //?} else {
+        /*final String translationKey = keyBinding.getTranslationKey();
+        *///?}
         final Long lastPressTime = lastKeyPresses.get(translationKey);
         final long now = System.currentTimeMillis();
         if (lastPressTime != null && now - lastPressTime < 500) return true;

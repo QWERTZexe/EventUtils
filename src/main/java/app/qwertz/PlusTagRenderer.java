@@ -1,0 +1,27 @@
+/*
+ * Copyright 2026 QWERTZexe ALL RIGHTS RESERVED
+ */
+
+package app.qwertz;
+
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gl.RenderPipelines;
+
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Draws the plus tag icon (full texture, no slicing).
+ * Expects 64x64 textures in assets/eventutils/textures/gui/ (drawn at the given size for a sharp look):
+ * linked.png, bee.png, booster.png, contrib.png, admin.png, white.png.
+ */
+public final class PlusTagRenderer {
+    private static final int TEX_SIZE = 64;
+
+    private PlusTagRenderer() {}
+
+    /** Draw the icon at (x, y) with the given size (e.g. 8 for tab list). Samples full 64x64 texture, scaled to size. */
+    public static void draw(@NotNull DrawContext context, @NotNull PlusTag tag, int x, int y, int size) {
+        if (tag == PlusTag.WHITE) return; // unused, skip
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, tag.getTextureId(), x, y, 0f, 0f, size, size, TEX_SIZE, TEX_SIZE, TEX_SIZE, TEX_SIZE);
+    }
+}

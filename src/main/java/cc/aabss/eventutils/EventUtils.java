@@ -6,6 +6,7 @@ import cc.aabss.eventutils.websocket.SocketEndpoint;
 import cc.aabss.eventutils.websocket.WebSocketClient;
 import cc.aabss.eventutils.config.EventConfig;
 import cc.aabss.eventutils.config.PlayerGroup;
+import app.qwertz.EventAlertsApi;
 
 import com.google.gson.JsonObject;
 
@@ -86,6 +87,21 @@ public class EventUtils implements ClientModInitializer {
 
         // Update checker
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> updateChecker.checkUpdate());
+
+        // Fetch Event Alerts plus tags for local player (for tag menu)
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            if (client.player != null) {
+                String uuid = client.player.getUuid().toString();
+                LOGGER.info("[EventUtils] JOIN: scheduling Event Alerts fetch for local player uuid={}", uuid);
+                EventAlertsApi.scheduleFetchIfNeeded(uuid);
+            } else {
+                LOGGER.info("[EventUtils] JOIN: client.player is null, skipping fetch (will retry when tab list is opened)");
+            }
+        });
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            LOGGER.info("[EventUtils] DISCONNECT: clearing Event Alerts cache");
+            EventAlertsApi.clearCache();
+        });
 
         // Initialize keybind manager
         keybindManager = new KeybindManager(this);

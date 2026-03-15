@@ -124,5 +124,20 @@
   "eventutils.command.countname.list": "%s§e Found %s §eplayer%s §ewith '%s§e' in their name§e: %s",
   "eventutils.command.groupmsg.no_group": "%s§c No group named '%s§c' found.",
 
+  "eventutils.plustag.title": "Plus Tag",
+  "eventutils.plustag.subtitle": "Choose which + to show next to your name",
+  "eventutils.plustag.none": "[Linked]",
+  "eventutils.plustag.white": "[White]",
+  "eventutils.plustag.red": "[Red]",
+  "eventutils.plustag.blue": "[Blue]",
+  "eventutils.plustag.orange": "[Orange]",
+  "eventutils.plustag.pink": "[Pink]",
+  "eventutils.plustag.unlock.linked": "Unlocked by linking your Discord account (Event Alerts)",
+  "eventutils.plustag.unlock.none": "—",
+  "eventutils.plustag.unlock.admin": "Unlocked by being an Admin.",
+  "eventutils.plustag.unlock.contributor": "Unlocked by being a developer/contributor.",
+  "eventutils.plustag.unlock.bee": "Unlocked with Bee (subscription).",
+  "eventutils.plustag.unlock.booster": "Unlocked by boosting the Event Alerts Discord server.",
+
   "eventutils.word.plural": "s"
 }

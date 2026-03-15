@@ -2,6 +2,7 @@ package cc.aabss.eventutils.config;
 
 import cc.aabss.eventutils.EventType;
 import cc.aabss.eventutils.EventUtils;
+import app.qwertz.PlusTag;
 import cc.aabss.eventutils.Versions;
 
 import com.google.common.reflect.TypeToken;
@@ -35,6 +36,8 @@ public class EventConfig extends FileLoader {
     @NotNull public List<String> whitelistedPlayers;
     @NotNull public List<PlayerGroup> groups;
     public boolean useTestingApi;
+    /** Which plus tag to show next to name (from Event Alerts / Discord linking). */
+    @NotNull public PlusTag selectedPlusTag;
     @NotNull public final List<EventType> eventTypes;
     @NotNull public final Map<EventType, NotificationSound> notificationSounds;
 
@@ -66,6 +69,7 @@ public class EventConfig extends FileLoader {
         whitelistedPlayers = get("whitelisted_players", Defaults.whitelistedPlayers(), new TypeToken<List<String>>(){}.getType());
         groups = get("groups", Defaults.groups(), new TypeToken<List<PlayerGroup>>(){}.getType());
         useTestingApi = get("use_testing_api", Defaults.USE_TESTING_API);
+        selectedPlusTag = getPlusTag("selected_plus_tag", Defaults.SELECTED_PLUS_TAG);
         eventTypes = get("notifications", Defaults.eventTypes(), new TypeToken<List<EventType>>(){}.getType());
         notificationSounds = get("notification_sounds", Defaults.notificationSounds(), new TypeToken<Map<EventType, NotificationSound>>(){}.getType());
 
@@ -134,6 +138,22 @@ public class EventConfig extends FileLoader {
         return notificationSounds.getOrDefault(type, NotificationSound.ALERT);
     }
 
+    @NotNull
+    private PlusTag getPlusTag(@NotNull String key, @NotNull PlusTag defaultValue) {
+        String s = get(key, defaultValue.name());
+        if (s == null) return defaultValue;
+        try {
+            return PlusTag.valueOf(s.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return defaultValue;
+        }
+    }
+
+    public void setSelectedPlusTag(@NotNull PlusTag tag) {
+        this.selectedPlusTag = tag;
+        setSave("selected_plus_tag", tag.name());
+    }
+
     // Collections need to have methods to create new instances of the collection!
     public static class Defaults {
         public static final boolean DISCORD_RPC = true;
@@ -149,6 +169,7 @@ public class EventConfig extends FileLoader {
         @NotNull private static final List<String> HIDDEN_ENTITY_TYPES_STRING = List.of("minecraft:glow_item_frame");
         @NotNull private static final List<String> WHITELISTED_PLAYERS = List.of("skeppy", "badboyhalo");
         public static final boolean USE_TESTING_API = false;
+        @NotNull public static final PlusTag SELECTED_PLUS_TAG = PlusTag.NONE;
         @NotNull private static final List<EventType> EVENT_TYPES = List.of(EventType.values());
         @NotNull private static final Map<EventType, NotificationSound> NOTIFICATION_SOUNDS = Arrays.stream(EventType.values())
                 .collect(HashMap::new, (map, type) -> map.put(type, NotificationSound.ALERT), HashMap::putAll);

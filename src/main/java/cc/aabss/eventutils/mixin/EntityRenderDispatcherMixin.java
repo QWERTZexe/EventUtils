@@ -5,7 +5,11 @@ import cc.aabss.eventutils.EventUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+//? if >=1.21.11 {
+import net.minecraft.client.render.entity.EntityRenderManager;
+//?} else {
+/*import net.minecraft.client.render.entity.EntityRenderDispatcher;
+*///?}
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,7 +20,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
-@Mixin(EntityRenderDispatcher.class)
+//? if >=1.21.11 {
+@Mixin(EntityRenderManager.class)
+//?} else {
+/*@Mixin(EntityRenderDispatcher.class)
+*///?}
 public class EntityRenderDispatcherMixin {
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     //? if <=1.21.1 {
@@ -44,6 +52,10 @@ public class EntityRenderDispatcherMixin {
 
         // Specific radius
         final ClientPlayerEntity mainPlayer = MinecraftClient.getInstance().player;
-        if (mainPlayer != null && mainPlayer.getPos().distanceTo(entity.getPos()) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
+        //? if >=1.21.11 {
+        if (mainPlayer != null && mainPlayer.getSyncedPos().distanceTo(entity.getSyncedPos()) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
+        //?} else {
+        /*if (mainPlayer != null && mainPlayer.getPos().distanceTo(entity.getPos()) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
+        *///?}
     }
 }

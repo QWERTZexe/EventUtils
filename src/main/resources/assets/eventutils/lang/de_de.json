@@ -124,5 +124,20 @@
   "eventutils.command.countname.list": "%s§e Gefunden %s §eSpieler%s §emit '%s§e' im Namen§e: %s",
   "eventutils.command.groupmsg.no_group": "%s§c Keine Gruppe mit dem Namen '%s§c' gefunden.",
 
+  "eventutils.plustag.title": "Plus-Tag",
+  "eventutils.plustag.subtitle": "Wähle, welches + neben deinem Namen angezeigt wird",
+  "eventutils.plustag.none": "[Verknüpft]",
+  "eventutils.plustag.white": "[Weiß]",
+  "eventutils.plustag.red": "[Rot]",
+  "eventutils.plustag.blue": "[Blau]",
+  "eventutils.plustag.orange": "[Orange]",
+  "eventutils.plustag.pink": "[Pink]",
+  "eventutils.plustag.unlock.linked": "Freigeschaltet durch Verknüpfung deines Discord-Kontos (Event Alerts)",
+  "eventutils.plustag.unlock.none": "—",
+  "eventutils.plustag.unlock.admin": "Freigeschaltet als Admin.",
+  "eventutils.plustag.unlock.contributor": "Freigeschaltet als Entwickler/Mitarbeiter.",
+  "eventutils.plustag.unlock.bee": "Freigeschaltet mit Bee (Abonnement).",
+  "eventutils.plustag.unlock.booster": "Freigeschaltet durch Boosten des Event Alerts Discord-Servers.",
+
   "eventutils.word.plural": ""
 }

@@ -73,6 +73,10 @@ public class PlayerEntityRendererMixin {
         //?}
 
         // Radius-specific
-        if (clientPlayer.getPos().distanceTo(playerPos) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
+        //? if >=1.21.11 {
+        if (clientPlayer.getSyncedPos().distanceTo(playerPos) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
+        //?} else {
+        /*if (clientPlayer.getPos().distanceTo(playerPos) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
+        *///?}
     }
 }
