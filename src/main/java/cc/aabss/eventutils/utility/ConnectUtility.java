@@ -38,10 +38,10 @@ public class ConnectUtility {
         client.execute(() -> {
             try {
                 //? if >=1.21.11 {
-                client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")), false, false);
-                //?} else if >=1.21 {
-                /*client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")), false);
-                *///?} else {
+                /*client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")), false, false);
+                *///?} else if >=1.21 {
+                client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")), false);
+                //?} else {
                 /*client.disconnect(new MessageScreen(translatable("multiplayer.disconnect.generic")));
                 *///?}
 

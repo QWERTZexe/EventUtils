@@ -1,8 +1,4 @@
-/*
- * Copyright 2026 QWERTZexe ALL RIGHTS RESERVED
- */
-
-package app.qwertz;
+package cc.aabss.eventutils.plustag;
 
 import cc.aabss.eventutils.EventUtils;
 
@@ -76,9 +72,9 @@ public enum PlusTag {
             return null;
         }
         PlusTag best = null;
-        for (PlusTag t : unlocked) {
-            if (t == WHITE) continue;
-            if (best == null || t.displayPriority() > best.displayPriority()) best = t;
+        for (PlusTag tag : unlocked) {
+            if (tag == WHITE) continue;
+            if (best == null || tag.displayPriority() > best.displayPriority()) best = tag;
         }
         EventUtils.LOGGER.debug("[PlusTag] pickBestForDisplay: unlocked={} -> best={}", unlocked, best);
         return best;

@@ -13,6 +13,7 @@
     "EntryListWidgetAccessor",
     "KeyBindingMixin",
     "MultiplayerScreenMixin",
+    "PlayerListHudMixin",
     "PlayerEntityRendererMixin"
   ],
   "injectors": {

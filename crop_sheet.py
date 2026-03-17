@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# Copyright 2026 QWERTZexe ALL RIGHTS RESERVED
 """Crop sheet.png (3 cols x 2 rows) into individual plus-tag icons with transparent background."""
 from pathlib import Path
 

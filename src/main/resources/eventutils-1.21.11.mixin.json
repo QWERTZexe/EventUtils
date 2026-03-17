@@ -11,6 +11,7 @@
     "EntityRenderDispatcherMixin",
     "EntryListWidgetAccessor",
     "KeyBindingMixin",
+    "PlayerListHudMixin",
     "PlayerEntityRendererMixin"
   ],
   "injectors": {

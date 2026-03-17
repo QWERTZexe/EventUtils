@@ -6,7 +6,7 @@ import cc.aabss.eventutils.websocket.SocketEndpoint;
 import cc.aabss.eventutils.websocket.WebSocketClient;
 import cc.aabss.eventutils.config.EventConfig;
 import cc.aabss.eventutils.config.PlayerGroup;
-import app.qwertz.EventAlertsApi;
+import cc.aabss.eventutils.plustag.EventAlertsApi;
 
 import com.google.gson.JsonObject;
 
@@ -88,12 +88,12 @@ public class EventUtils implements ClientModInitializer {
         // Update checker
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> updateChecker.checkUpdate());
 
-        // Fetch Event Alerts plus tags for local player (for tag menu)
+        // Fetch Event Alerts plus tags for local player
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             if (client.player != null) {
-                String uuid = client.player.getUuid().toString();
+                var uuid = client.player.getUuid();
                 LOGGER.info("[EventUtils] JOIN: scheduling Event Alerts fetch for local player uuid={}", uuid);
-                EventAlertsApi.scheduleFetchIfNeeded(uuid);
+                EventAlertsApi.scheduleFetchIfNeeded(uuid.toString());
             } else {
                 LOGGER.info("[EventUtils] JOIN: client.player is null, skipping fetch (will retry when tab list is opened)");
             }
@@ -165,41 +165,41 @@ public class EventUtils implements ClientModInitializer {
     }
 
     /** Whether the current view mode is "players revealed" (show everyone). */
-    public static boolean isHidePlayersRevealed() {
-        final int n = MOD.config.groups.size();
-        if (n == 0) return MOD.hidePlayersViewMode == 1;
-        return MOD.hidePlayersViewMode >= n;
+    public boolean isHidePlayersRevealed() {
+        final int n = config.groups.size();
+        if (n == 0) return hidePlayersViewMode == 1;
+        return hidePlayersViewMode >= n;
     }
 
     /** Whether we are in a "hide" mode (any group or hide-all). */
-    public static boolean isInHidePlayersMode() {
-        final int n = MOD.config.groups.size();
-        if (n == 0) return MOD.hidePlayersViewMode == 0;
-        return MOD.hidePlayersViewMode < n;
+    public boolean isInHidePlayersMode() {
+        final int n = config.groups.size();
+        if (n == 0) return hidePlayersViewMode == 0;
+        return hidePlayersViewMode < n;
     }
 
     /** Current group when in group view mode, or null if revealed or no groups. */
     @Nullable
-    public static PlayerGroup getCurrentViewGroup() {
-        final var groups = MOD.config.groups;
-        if (groups.isEmpty() || MOD.hidePlayersViewMode >= groups.size()) return null;
-        return groups.get(MOD.hidePlayersViewMode);
+    public PlayerGroup getCurrentViewGroup() {
+        final var groups = config.groups;
+        if (groups.isEmpty() || hidePlayersViewMode >= groups.size()) return null;
+        return groups.get(hidePlayersViewMode);
     }
 
     /**
      * True if the player (by lowercased name) should be visible with current view mode.
      * Caller must exclude main player.
      */
-    public static boolean isPlayerVisible(@NotNull String nameLower) {
+    public boolean isPlayerVisible(@NotNull String nameLower) {
         if (isHidePlayersRevealed()) return true;
-        if (MOD.config.whitelistedPlayers.contains(nameLower) || isNPC(nameLower)) return true;
+        if (config.whitelistedPlayers.contains(nameLower) || isNPC(nameLower)) return true;
         final PlayerGroup group = getCurrentViewGroup();
         if (group == null) return false; // no groups, hide mode: only whitelist/NPC
         return group.containsPlayer(nameLower);
     }
 
     /** True if the nametag for this visible player should be drawn (per-group setting when in group view). */
-    public static boolean shouldShowNametagFor(@NotNull String nameLower) {
+    public boolean shouldShowNametagFor(@NotNull String nameLower) {
         if (!isInHidePlayersMode()) return true;
         final PlayerGroup group = getCurrentViewGroup();
         if (group == null) return true; // hide-all with no groups: use default

@@ -11,8 +11,8 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 //? if >=1.21.11 {
-import net.minecraft.util.Identifier;
-//?}
+/*import net.minecraft.util.Identifier;
+*///?}
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +36,7 @@ public class KeybindManager {
     public KeybindManager(@NotNull EventUtils mod) {
         // Keybindings
         //? if >=1.21.11 {
-        final KeyBinding.Category category = KeyBinding.Category.create(Identifier.of("eventutils", "key.category.eventutils"));
+        /*final KeyBinding.Category category = KeyBinding.Category.create(Identifier.of("eventutils", "key.category.eventutils"));
         eventInfoKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.eventutils.eventinfo",
                 InputUtil.Type.KEYSYM,
@@ -47,8 +47,8 @@ public class KeybindManager {
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_F10,
                 category));
-        //?} else {
-        /*eventInfoKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        *///?} else {
+        eventInfoKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.eventutils.eventinfo",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_RIGHT_SHIFT,
@@ -58,7 +58,7 @@ public class KeybindManager {
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_F10,
                 CATEGORY));
-        *///?}
+        //?}
         // DEV: Uncomment to force test event
 //        final KeyBindingMixin testEventKey = (KeyBindingMixin) KeyBindingHelper.registerKeyBinding(new KeyBinding(
 //                "key.eventutils.testevent",
@@ -102,12 +102,12 @@ public class KeybindManager {
                 final int groupCount = mod.config.groups.size();
                 final int totalStates = groupCount == 0 ? 2 : groupCount + 1;
                 mod.hidePlayersViewMode = (mod.hidePlayersViewMode + 1) % totalStates;
-                final boolean revealed = EventUtils.isHidePlayersRevealed();
+                final boolean revealed = EventUtils.MOD.isHidePlayersRevealed();
                 final Text message;
                 if (revealed) {
                     message = translatable("eventutils.hideplayers.view_revealed").formatted(Formatting.GREEN);
                 } else {
-                    final var group = EventUtils.getCurrentViewGroup();
+                    final var group = EventUtils.MOD.getCurrentViewGroup();
                     message = (group != null ? literal(group.getName()) : translatable("eventutils.hideplayers.view_whitelist_only"))
                             .formatted(Formatting.GREEN);
                 }
@@ -118,10 +118,10 @@ public class KeybindManager {
 
     private boolean canNotPress(@NotNull KeyBinding keyBinding) {
         //? if >=1.21.11 {
-        final String translationKey = keyBinding.getId();
-        //?} else {
-        /*final String translationKey = keyBinding.getTranslationKey();
-        *///?}
+        /*final String translationKey = keyBinding.getId();
+        *///?} else {
+        final String translationKey = keyBinding.getTranslationKey();
+        //?}
         final Long lastPressTime = lastKeyPresses.get(translationKey);
         final long now = System.currentTimeMillis();
         if (lastPressTime != null && now - lastPressTime < 500) return true;

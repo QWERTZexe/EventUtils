@@ -6,14 +6,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 //? if >=1.21.11 {
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+/*import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRenderManager;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.util.math.Vec3d;
-//?} else {
-/*import net.minecraft.client.render.entity.EntityRenderDispatcher;
-*///?}
+*///?} else {
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+//?}
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -26,21 +26,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
 //? if >=1.21.11 {
-@Mixin(EntityRenderManager.class)
-//?} else {
-/*@Mixin(EntityRenderDispatcher.class)
-*///?}
+/*@Mixin(EntityRenderManager.class)
+*///?} else {
+@Mixin(EntityRenderDispatcher.class)
+//?}
 public class EntityRenderDispatcherMixin {
     //? if >=1.21.11 {
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    /*@Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void render(EntityRenderState renderState, CameraRenderState cameraRenderState, double x, double y, double z, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, CallbackInfo ci) {
-        if (!EventUtils.isInHidePlayersMode()) return;
+        if (!EventUtils.MOD.isInHidePlayersMode()) return;
 
         if (renderState.entityType == EntityType.PLAYER) {
             final ClientPlayerEntity mainPlayer = MinecraftClient.getInstance().player;
             if (mainPlayer != null && renderState.displayName != null && mainPlayer.getName().getString().equalsIgnoreCase(renderState.displayName.getString())) return;
             final String name = renderState.displayName != null ? renderState.displayName.getString().toLowerCase() : "";
-            if (EventUtils.isPlayerVisible(name)) return;
+            if (EventUtils.MOD.isPlayerVisible(name)) return;
         } else {
             if (!EventUtils.MOD.config.hiddenEntityTypes.contains(renderState.entityType)) return;
         }
@@ -56,15 +56,15 @@ public class EntityRenderDispatcherMixin {
             if (mainPlayer.getSyncedPos().distanceTo(entityPos) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
         }
     }
-    //?} else {
-    /*@Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    *///?} else {
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private <E extends Entity> void render(E entity, double x, double y, double z, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, CallbackInfo ci) {
-        if (!EventUtils.isInHidePlayersMode()) return;
+        if (!EventUtils.MOD.isInHidePlayersMode()) return;
 
         if (entity instanceof PlayerEntity player) {
             if (player.isMainPlayer()) return;
             final String name = player.getName().getString().toLowerCase();
-            if (EventUtils.isPlayerVisible(name)) return;
+            if (EventUtils.MOD.isPlayerVisible(name)) return;
         } else {
             if (!EventUtils.MOD.config.hiddenEntityTypes.contains(entity.getType())) return;
         }
@@ -77,5 +77,5 @@ public class EntityRenderDispatcherMixin {
         final ClientPlayerEntity mainPlayer = MinecraftClient.getInstance().player;
         if (mainPlayer != null && mainPlayer.getPos().distanceTo(entity.getPos()) <= EventUtils.MOD.config.hidePlayersRadius) ci.cancel();
     }
-    *///?}
+    //?}
 }

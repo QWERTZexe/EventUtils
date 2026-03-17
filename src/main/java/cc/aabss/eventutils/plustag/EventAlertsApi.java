@@ -1,12 +1,7 @@
-/*
- * Copyright 2026 QWERTZexe ALL RIGHTS RESERVED
- */
-
-package app.qwertz;
+package cc.aabss.eventutils.plustag;
 
 import cc.aabss.eventutils.EventUtils;
 import cc.aabss.eventutils.Versions;
-import cc.aabss.eventutils.config.EventConfig;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,6 +17,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -34,10 +30,10 @@ public final class EventAlertsApi {
     private static final String API_PATH = "/api/v1/players/minecraft/uuid/";
 
     private static final HttpClient HTTP = HttpClient.newBuilder().build();
-    /** Cache: UUID (no dashes) -> unlocked tags. Cleared on world unload. */
-    private static final ConcurrentHashMap<String, Set<PlusTag>> CACHE = new ConcurrentHashMap<>();
+    /** Cache: Minecraft UUID -> unlocked tags. Cleared on world unload. */
+    private static final ConcurrentHashMap<UUID, EnumSet<PlusTag>> CACHE = new ConcurrentHashMap<>();
     /** UUIDs we've already scheduled a fetch for (avoid duplicate requests until cache clear). */
-    private static final Set<String> FETCH_SCHEDULED = ConcurrentHashMap.newKeySet();
+    private static final Set<UUID> FETCH_SCHEDULED = ConcurrentHashMap.newKeySet();
 
     private EventAlertsApi() {}
 
@@ -46,30 +42,27 @@ public final class EventAlertsApi {
         return EventUtils.MOD.config.useTestingApi ? "http://localhost:9090" : API_BASE;
     }
 
-    /** Convert 32-char hex (no dashes) to standard UUID form with dashes: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx */
-    @NotNull
-    private static String toDashedUuid(@NotNull String key32) {
-        return key32.substring(0, 8) + "-" + key32.substring(8, 12) + "-" + key32.substring(12, 16) + "-" + key32.substring(16, 20) + "-" + key32.substring(20, 32);
+    @Nullable
+    private static UUID parseMinecraftUuid(@NotNull String uuidString) {
+        try {
+            return UUID.fromString(uuidString);
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
     }
 
-    /** Fetch unlocked plus tags for a Minecraft UUID (with or without dashes). Returns empty set on failure. */
+    /** Fetch unlocked plus tags for a Minecraft UUID. Returns empty set on failure. */
     @NotNull
-    public static Set<PlusTag> fetchUnlockedTags(@NotNull String minecraftUuid) {
-        String key = minecraftUuid.replace("-", "").toLowerCase();
-        if (key.length() != 32) {
-            EventUtils.LOGGER.debug("[EventAlerts] fetchUnlockedTags: invalid UUID length key={} len={}", key, key.length());
-            return Set.of();
-        }
-
-        Set<PlusTag> cached = CACHE.get(key);
+    public static EnumSet<PlusTag> fetchUnlockedTags(@NotNull UUID minecraftUuid) {
+        EnumSet<PlusTag> cached = CACHE.get(minecraftUuid);
         if (cached != null) {
-            EventUtils.LOGGER.debug("[EventAlerts] fetchUnlockedTags: cache HIT uuid={} tags={}", key, cached);
+            EventUtils.LOGGER.debug("[EventAlerts] fetchUnlockedTags: cache HIT uuid={} tags={}", minecraftUuid, cached);
             return cached;
         }
 
-        EventUtils.LOGGER.info("[EventAlerts] Fetching tags for uuid={}", key);
+        EventUtils.LOGGER.info("[EventAlerts] Fetching tags for uuid={}", minecraftUuid);
         try {
-            String url = getApiBase() + API_PATH + toDashedUuid(key);
+            String url = getApiBase() + API_PATH + minecraftUuid;
             EventUtils.LOGGER.debug("[EventAlerts] GET {}", url);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -80,7 +73,7 @@ public final class EventAlertsApi {
             EventUtils.LOGGER.debug("[EventAlerts] response status={} bodyLength={}", response.statusCode(), response.body().length());
             if (response.statusCode() != 200) {
                 EventUtils.LOGGER.warn("[EventAlerts] API returned status={} body={}", response.statusCode(), response.body());
-                return Set.of();
+                return EnumSet.noneOf(PlusTag.class);
             }
 
             JsonObject root = JsonParser.parseString(response.body()).getAsJsonObject();
@@ -94,23 +87,23 @@ public final class EventAlertsApi {
                 EventUtils.LOGGER.debug("[EventAlerts] using root as data (no player wrapper)");
             } else {
                 EventUtils.LOGGER.info("[EventAlerts] API response: player=null (not linked or not found)");
-                return Set.of(); // player: null
+                return EnumSet.noneOf(PlusTag.class); // player: null
             }
-            Set<PlusTag> unlocked = parseUnlockedTags(data);
-            EventUtils.LOGGER.debug("[EventAlerts] parsed unlocked tags={} for uuid={}", unlocked, key);
-            CACHE.put(key, unlocked);
-            EventUtils.LOGGER.info("[EventAlerts] Fetched uuid={} tags={}", key, unlocked);
+            EnumSet<PlusTag> unlocked = parseUnlockedTags(data);
+            EventUtils.LOGGER.debug("[EventAlerts] parsed unlocked tags={} for uuid={}", unlocked, minecraftUuid);
+            CACHE.put(minecraftUuid, unlocked);
+            EventUtils.LOGGER.info("[EventAlerts] Fetched uuid={} tags={}", minecraftUuid, unlocked);
             return unlocked;
         } catch (Exception e) {
-            EventUtils.LOGGER.warn("[EventAlerts] Fetch failed uuid={} error={}", key, e.getMessage(), e);
-            return Set.of();
+            EventUtils.LOGGER.warn("[EventAlerts] Fetch failed uuid={} error={}", minecraftUuid, e.getMessage(), e);
+            return EnumSet.noneOf(PlusTag.class);
         }
     }
 
     /** Parse API response into unlocked tags. Expects player object: id, discord, minecraft, subscription (1=premium/Bee), anniversaries, roles (optional). */
     @NotNull
-    private static Set<PlusTag> parseUnlockedTags(@NotNull JsonObject root) {
-        Set<PlusTag> out = EnumSet.noneOf(PlusTag.class);
+    private static EnumSet<PlusTag> parseUnlockedTags(@NotNull JsonObject root) {
+        EnumSet<PlusTag> out = EnumSet.noneOf(PlusTag.class);
 
         // Linked: has discord and minecraft
         if (root.has("discord") && root.has("minecraft")) {
@@ -195,18 +188,27 @@ public final class EventAlertsApi {
     }
 
     /** Schedule a fetch for this UUID if not cached and not already scheduled. Call from main thread. */
-    public static void scheduleFetchIfNeeded(@NotNull String minecraftUuid) {
-        String key = minecraftUuid.replace("-", "").toLowerCase();
-        if (key.length() != 32) return;
-        if (CACHE.containsKey(key)) return;
-        if (!FETCH_SCHEDULED.add(key)) return; // already scheduled
-        EventUtils.LOGGER.info("[EventAlerts] Scheduling fetch for uuid={}", key);
+    public static void scheduleFetchIfNeeded(@NotNull UUID minecraftUuid) {
+        if (CACHE.containsKey(minecraftUuid)) return;
+        if (!FETCH_SCHEDULED.add(minecraftUuid)) return; // already scheduled
+        EventUtils.LOGGER.info("[EventAlerts] Scheduling fetch for uuid={}", minecraftUuid);
         EventUtils.MOD.scheduler.execute(() -> EventAlertsApi.fetchUnlockedTags(minecraftUuid));
+    }
+
+    public static void scheduleFetchIfNeeded(@NotNull String minecraftUuid) {
+        UUID uuid = parseMinecraftUuid(minecraftUuid);
+        if (uuid != null) scheduleFetchIfNeeded(uuid);
     }
 
     /** Get cached unlocked tags for UUID, or null if not cached. (No per-call debug log to avoid spam from tab list.) */
     @Nullable
-    public static Set<PlusTag> getCached(@NotNull String minecraftUuid) {
-        return CACHE.get(minecraftUuid.replace("-", "").toLowerCase());
+    public static EnumSet<PlusTag> getCached(@NotNull UUID minecraftUuid) {
+        return CACHE.get(minecraftUuid);
+    }
+
+    @Nullable
+    public static EnumSet<PlusTag> getCached(@NotNull String minecraftUuid) {
+        UUID uuid = parseMinecraftUuid(minecraftUuid);
+        return uuid != null ? CACHE.get(uuid) : null;
     }
 }

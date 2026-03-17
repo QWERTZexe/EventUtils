@@ -1,6 +1,5 @@
 package cc.aabss.eventutils.commands;
 
-import app.qwertz.commands.TagCmd;
 import cc.aabss.eventutils.EventType;
 import cc.aabss.eventutils.EventUtils;
 import cc.aabss.eventutils.config.PlayerGroup;
@@ -99,11 +98,6 @@ public class CommandRegister {
                     return 0;
                 }).build();
 
-        final LiteralCommandNode<FabricClientCommandSource> tag = ClientCommandManager
-                .literal("tag")
-                .executes(context -> TagCmd.openTagScreen(context))
-                .build();
-
         final LiteralCommandNode<FabricClientCommandSource> groupMsg = ClientCommandManager
                 .literal("groupmsg")
                 .then(ClientCommandManager.argument("group", StringArgumentType.word())
@@ -124,7 +118,6 @@ public class CommandRegister {
         main.addChild(priority);
         main.addChild(priorityTop);
         main.addChild(countName);
-        main.addChild(tag);
         main.addChild(groupMsg);
     }
 }
